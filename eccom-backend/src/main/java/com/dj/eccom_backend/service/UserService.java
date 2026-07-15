@@ -1,7 +1,5 @@
 package com.dj.eccom_backend.service;
 
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 
 import com.dj.eccom_backend.exception.UserException;
@@ -19,8 +17,9 @@ public class UserService {
     private final UserRepository userRepo;
 
     public UserResponse register(UserSignUp user) {
+        
         if (userRepo.existsByEmail(user.email())) {
-            throw new UserException("Email is already taken!");
+            throw new UserException("User Already Present, Login");
         }
 
         User newUser = new User();
