@@ -20,3 +20,11 @@ export async function signUpApi(singUpData){
     }
 }
 
+export async function getAllProductsApi(){
+    try{
+        const response = await axios.get(`${BASE_URL}/product`);
+        return response.data;
+    }catch (error){
+        throw new Error(error.response?.data?.message || 'Failed to fetch products');
+    }
+}

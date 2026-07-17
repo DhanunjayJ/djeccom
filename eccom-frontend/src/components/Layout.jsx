@@ -8,7 +8,6 @@ export default function Layout() {
     return localStorage.getItem("theme") === "dark";
   });
 
-
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add("dark");
@@ -20,7 +19,7 @@ export default function Layout() {
   }, [darkMode]);
 
   return (
-    <div className="min-h-screen bg-gray-50/50 transition-colors duration-300 dark:bg-zinc-950">
+    <div className="min-h-screen">
       <Toaster 
         position="top-right" 
         toastOptions={{
