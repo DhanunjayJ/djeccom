@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { getAllProductsApi } from "../http";
 import toast from "react-hot-toast";
 import { ChevronLeft, ChevronRight } from "lucide-react"; // Import arrows
+import { Link } from "react-router-dom";
 
 
 const CategoryCarousel = ({ categoryName, categoryProducts }) => {
@@ -83,11 +84,13 @@ const CategoryCarousel = ({ categoryName, categoryProducts }) => {
       >
    
         {infiniteProducts.map((product, index) => (
-          <div
-          
-            key={`${product.id}-${index}`}
-            className="group relative flex cursor-pointer flex-col flex-shrink-0 snap-start w-[85vw] sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]"
-          >
+            <Link
+                to={`/product/${product.id}`}
+                state={{ product: product }} 
+              key={`${product.id}-${index}`}
+                className="group relative flex cursor-pointer flex-col flex-shrink-0 snap-start w-[85vw] sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]"
+            > 
+
             <div className="aspect-square w-full overflow-hidden rounded-2xl border border-gray-100 bg-gray-100 transition dark:border-zinc-800 dark:bg-zinc-800/50">
               <img
                 src={product.imageUrl}
@@ -111,7 +114,7 @@ const CategoryCarousel = ({ categoryName, categoryProducts }) => {
                 ${product.price}
               </p>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

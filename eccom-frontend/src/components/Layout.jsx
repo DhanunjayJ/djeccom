@@ -1,12 +1,17 @@
 import { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import Header from "./Header";
-import { Toaster } from "react-hot-toast"; 
+import { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
+import { getAllProductsApi } from "../http"; 
 
 export default function Layout() {
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem("theme") === "dark";
   });
+  
+  const [products, setProducts] = useState(null);
+
 
   useEffect(() => {
     if (darkMode) {
@@ -18,9 +23,24 @@ export default function Layout() {
     }
   }, [darkMode]);
 
+
+  useEffect(() => {
+    const loadProduct = async () => {
+      try {
+        const data = await getAllProductsApi();
+        setProducts(data);
+      } catch (err) {
+        toast.error(err.message || "Unable to Fetch Products");
+      }
+    };
+    
+    if (!products) {
+      loadProduct();
+    }
+  }, [products]);
+
   return (
     <div className="min-h-screen">
-
       <Toaster 
         position="top-right" 
         toastOptions={{
@@ -30,8 +50,8 @@ export default function Layout() {
       />
       <Header darkMode={darkMode} setDarkMode={setDarkMode} />
       
-      <main className="mx-auto max-w-7xl px-4 pt-10 pb-12">
-        <Outlet />
+      <main className="mx-auto max-w-7xl px-4 pb-12 pt-28">
+        <Outlet context={{ products }} />
       </main>
     </div>
   );

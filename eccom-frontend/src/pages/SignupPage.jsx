@@ -84,7 +84,7 @@ export default function SignupPage() {
       </form>
       
       <p className="mt-6 text-center text-sm text-gray-600 dark:text-zinc-400">
-        Already have an account?{" "}
+        Already have an account?
         <Link to="/login" className="font-semibold text-black hover:underline dark:text-white">
           Sign In
         </Link>

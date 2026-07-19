@@ -1,25 +1,11 @@
-import { useEffect, useState, useRef } from "react";
-import { getAllProductsApi } from "../http";
-import toast from "react-hot-toast";
+import { useOutletContext } from "react-router-dom";
+import { useRef } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import CategoryCarousel from "./CategoryCarousel";
 
-
 export default function HomePage() {
-  const [products, setProducts] = useState(null);
+  const { products } = useOutletContext();
 
-  useEffect(() => {
-    const loadProduct = async () => {
-      try {
-        const data = await getAllProductsApi();
-        setProducts(data);
-      } catch (err) {
-        toast.error(err.message || "Unable to Fetch Products");
-      }
-    };
-    loadProduct();
-  }, []);
-
- 
   const groupedProducts = products?.reduce((acc, product) => {
     if (!acc[product.category]) {
       acc[product.category] = [];
