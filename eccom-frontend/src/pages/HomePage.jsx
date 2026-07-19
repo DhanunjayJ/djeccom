@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { getAllProductsApi } from "../http";
 import toast from "react-hot-toast";
+import CategoryCarousel from "./CategoryCarousel";
+
 
 export default function HomePage() {
   const [products, setProducts] = useState(null);
@@ -8,8 +10,8 @@ export default function HomePage() {
   useEffect(() => {
     const loadProduct = async () => {
       try {
-        const products = await getAllProductsApi();
-        setProducts(products);
+        const data = await getAllProductsApi();
+        setProducts(data);
       } catch (err) {
         toast.error(err.message || "Unable to Fetch Products");
       }
@@ -17,8 +19,19 @@ export default function HomePage() {
     loadProduct();
   }, []);
 
+ 
+  const groupedProducts = products?.reduce((acc, product) => {
+    if (!acc[product.category]) {
+      acc[product.category] = [];
+    }
+    acc[product.category].push(product);
+    return acc;
+  }, {});
+
   return (
-    <div className="space-y-10">
+    <div className="space-y-12"> 
+      
+     
       <div className="rounded-3xl bg-zinc-900 p-8 text-white shadow-sm md:p-12 dark:bg-zinc-800 dark:border dark:border-zinc-700">
         <div className="max-w-md space-y-4">
           <span className="text-xs font-bold uppercase tracking-widest text-zinc-400">
@@ -37,58 +50,25 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div className="space-y-6">
-        <div>
-          <h3 className="text-2xl font-black tracking-tight text-black dark:text-white">
-            Featured Products
-          </h3>
-          <p className="text-sm text-gray-500 dark:text-zinc-400">
-            Handpicked items just for you
+     
+      {products ? (
+        <div className="space-y-16">
+          {Object.entries(groupedProducts).map(([category, items]) => (
+            <CategoryCarousel
+              key={category}
+              categoryName={category}
+              categoryProducts={items}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="flex h-64 w-full flex-col items-center justify-center gap-4">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-zinc-200 border-t-black dark:border-zinc-800 dark:border-t-white" />
+          <p className="animate-pulse text-sm font-medium text-zinc-500">
+            Loading Premium Categories...
           </p>
         </div>
-
-        {products ? (
-          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-            {products.map((product) => (
-              <div
-                key={product.id}
-                className="group relative flex cursor-pointer flex-col"
-              >
-                <div className="aspect-square w-full overflow-hidden rounded-2xl border border-gray-100 bg-gray-100 transition dark:border-zinc-800 dark:bg-zinc-800/50">
-                  <img
-                    src={product.imageUrl}
-                    alt={product.name}
-                    className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </div>
-
-                <div className="mt-4 flex flex-1 flex-col justify-between">
-                  <div>
-                    <p className="text-xs font-medium text-gray-400">
-                      {product.category}
-                    </p>
-                    <h4 className="mt-0.5 line-clamp-1 text-sm font-bold text-gray-900 dark:text-gray-100">
-                      {product.name}
-                    </h4>
-                  </div>
-                  <p className="mt-1 text-sm font-black text-black dark:text-white">
-                    ${product.price}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="flex h-64 w-full flex-col items-center justify-center gap-4">
-            <div className="h-10 w-10 animate-spin rounded-full border-4 border-zinc-200 border-t-black dark:border-zinc-800 dark:border-t-white" />
-            <p className="animate-pulse text-sm font-medium text-zinc-500">
-              Loading Premium Products...
-            </p>
-          </div>
-        )}
-      </div>
+      )}
     </div>
   );
 }

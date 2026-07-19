@@ -20,6 +20,7 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen">
+
       <Toaster 
         position="top-right" 
         toastOptions={{
@@ -29,7 +30,7 @@ export default function Layout() {
       />
       <Header darkMode={darkMode} setDarkMode={setDarkMode} />
       
-      <main className="mx-auto max-w-7xl px-4 pt-28 pb-12">
+      <main className="mx-auto max-w-7xl px-4 pt-10 pb-12">
         <Outlet />
       </main>
     </div>

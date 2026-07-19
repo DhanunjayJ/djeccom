@@ -37,7 +37,7 @@ export default function Header({ darkMode, setDarkMode }) {
             </Link>
           </div>
 
-          <div className="order-3 w-full md:order-2 md:flex-[2] md:flex md:justify-center">
+          <div className="order-3 w-full md:order-2 md:flex-2 md:flex md:justify-center">
             <div className="relative w-full md:max-w-md">
               <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
               <input
@@ -61,7 +61,7 @@ export default function Header({ darkMode, setDarkMode }) {
               <div className="flex items-center gap-1.5 md:gap-2">
                 <div className="flex items-center justify-center gap-1.5 rounded-full bg-gray-100 p-2 text-sm font-medium text-gray-800 md:px-4 md:py-2 dark:bg-zinc-800 dark:text-zinc-200">
                   <User className="h-4 w-4" />
-                  <span className="hidden max-w-[120px] truncate md:block">
+                  <span className="hidden max-w-30 truncate md:block">
                     Hi, {user.userName}
                   </span>
                 </div>
