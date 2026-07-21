@@ -1,6 +1,4 @@
-import { useEffect, useState, useRef } from "react";
-import { getAllProductsApi } from "../http";
-import toast from "react-hot-toast";
+import { useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react"; // Import arrows
 import { Link } from "react-router-dom";
 

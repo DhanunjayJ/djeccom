@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { ShoppingCart, User, Search, LogOut, Sun, Moon } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { useStore } from "../context/StoreProvider";
 
 export default function Header({ darkMode, setDarkMode }) {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+  const { totalCartItems, setIsCartOpen } = useStore();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -25,7 +27,7 @@ export default function Header({ darkMode, setDarkMode }) {
 
   return (
     <>
-      <header className="sticky top-4 z-50 mx-4 mt-4 max-w-7xl rounded-2xl border border-gray-100 bg-white/70 shadow-sm backdrop-blur-md xl:mx-auto dark:border-zinc-800 dark:bg-zinc-900/70">
+      <header className="sticky top-4 z-50 mx-4 mt-4 max-w-7xl rounded-4xl border border-gray-100 bg-white/70 shadow-sm backdrop-blur-md xl:mx-auto dark:border-zinc-800 dark:bg-zinc-900/70">
         <div className="flex flex-wrap items-center justify-between gap-y-4 px-4 py-3 md:px-6 md:py-4">
           
           <div className="order-1 flex items-center md:flex-1">
@@ -83,21 +85,25 @@ export default function Header({ darkMode, setDarkMode }) {
               </Link>
             )}
 
-            <button className="relative hidden items-center gap-1.5 rounded-full bg-black px-4 py-2 text-sm font-medium text-white shadow-sm transition active:scale-95 hover:bg-zinc-900 md:flex dark:bg-white dark:text-black dark:hover:bg-zinc-100">
+            <button 
+            onClick={() => setIsCartOpen(true)}
+            className="relative hidden items-center gap-1.5 rounded-full bg-black px-4 py-2 text-sm font-medium text-white shadow-sm transition active:scale-95 hover:bg-zinc-900 md:flex dark:bg-white dark:text-black dark:hover:bg-zinc-100">
               <ShoppingCart className="h-4 w-4" />
               <span>Cart</span>
               <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full border border-white bg-black text-[10px] font-bold text-white dark:border-zinc-900 dark:bg-white dark:text-black">
-                0
+                {totalCartItems}
               </span>
             </button>
           </div>
         </div>
       </header>
 
-      <button className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-black text-white shadow-xl transition active:scale-95 md:hidden dark:bg-white dark:text-black">
+      <button 
+      onClick={() => setIsCartOpen(true)}
+      className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-black text-white shadow-xl transition active:scale-95 md:hidden dark:bg-white dark:text-black">
         <ShoppingCart className="h-6 w-6" />
         <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full border-2 border-white bg-black text-[10px] font-bold text-white dark:border-zinc-900 dark:bg-white dark:text-black">
-          0
+          {totalCartItems}
         </span>
       </button>
     </>

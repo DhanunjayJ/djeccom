@@ -1,10 +1,9 @@
 import { useOutletContext } from "react-router-dom";
-import { useRef } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import CategoryCarousel from "./CategoryCarousel";
+import { useStore } from "../context/StoreProvider";
 
 export default function HomePage() {
-  const { products } = useOutletContext();
+ const { products } = useStore();
 
   const groupedProducts = products?.reduce((acc, product) => {
     if (!acc[product.category]) {
@@ -17,7 +16,6 @@ export default function HomePage() {
   return (
     <div className="space-y-12"> 
       
-     
       <div className="rounded-3xl bg-zinc-900 p-8 text-white shadow-sm md:p-12 dark:bg-zinc-800 dark:border dark:border-zinc-700">
         <div className="max-w-md space-y-4">
           <span className="text-xs font-bold uppercase tracking-widest text-zinc-400">

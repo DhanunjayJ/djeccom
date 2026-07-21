@@ -1,11 +1,13 @@
 import { useEffect } from "react";
 import { useLocation, Link, Navigate } from "react-router-dom";
 import { ArrowLeft, ShoppingCart, ShieldCheck, Truck } from "lucide-react";
+import { useStore } from "../context/StoreProvider";
 
 export default function ProductPage() {
   const location = useLocation();
-  
   const product = location.state?.product;
+
+  const { addToCart } = useStore();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -58,6 +60,7 @@ export default function ProductPage() {
   
             <button
               disabled={isOutOfStock}
+              onClick={() => addToCart(product)}
               className={`flex w-full items-center justify-center gap-2 rounded-2xl px-8 py-4 text-lg font-bold transition active:scale-[0.98] ${
                 isOutOfStock
                   ? "cursor-not-allowed bg-gray-200 text-gray-500 dark:bg-zinc-800 dark:text-gray-500"
