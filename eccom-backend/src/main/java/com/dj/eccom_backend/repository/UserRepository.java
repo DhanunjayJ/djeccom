@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.dj.eccom_backend.model.User;
 
+
 public interface UserRepository extends JpaRepository<User,Long>{
     boolean existsByUserName(String name);
     boolean existsByEmail(String email);

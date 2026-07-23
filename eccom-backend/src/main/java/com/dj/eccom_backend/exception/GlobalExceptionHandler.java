@@ -23,4 +23,9 @@ public class GlobalExceptionHandler {
         ex.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occured.");
     }
+
+    @ExceptionHandler(OutOfStockException.class)
+    public ResponseEntity<String> handleOutOfStockException(OutOfStockException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }
