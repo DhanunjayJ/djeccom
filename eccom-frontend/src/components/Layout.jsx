@@ -30,7 +30,7 @@ export default function Layout() {
       />
       <Header darkMode={darkMode} setDarkMode={setDarkMode} />
       
-      <main className="mx-auto max-w-7xl px-4 pb-12 pt-28">
+      <main className="mx-auto max-w-7xl px-4 pb-12 pt-15">
         <Outlet />
       </main>
       <CartDrawer />

@@ -1,8 +1,22 @@
+import { useNavigate } from "react-router-dom";
 import { useStore } from "../context/StoreProvider";
 import { X, Trash2, Minus, Plus } from "lucide-react";
 
 export default function CartDrawer() {
-  const { cart, isCartOpen, setIsCartOpen, removeFromCart, updateQuantity,cartTotal } = useStore();
+  const {
+    cart,
+    isCartOpen,
+    setIsCartOpen,
+    removeFromCart,
+    updateQuantity,
+    cartTotal,
+  } = useStore();
+  const navigate = useNavigate();
+
+  const handleProceedToCheckout = () => {
+    setIsCartOpen(false);
+    navigate("/checkout");
+  };
 
   return (
     <>
@@ -100,15 +114,18 @@ export default function CartDrawer() {
           )}
         </div>
 
-       
         {cart.length > 0 && (
           <div className="border-t border-gray-100 p-6 dark:border-zinc-800">
             <div className="mb-4 flex items-center justify-between text-lg font-black text-black dark:text-white">
               <span>Subtotal</span>
               <span>${cartTotal.toFixed(2)}</span>
             </div>
-            
-            <button className="w-full rounded-2xl bg-black py-4 text-sm font-bold text-white transition active:scale-95 hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-gray-100">
+
+            {/* 3. Update this button */}
+            <button
+              onClick={handleProceedToCheckout}
+              className="w-full rounded-2xl bg-black py-4 text-sm font-bold text-white transition active:scale-95 hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-gray-100"
+            >
               Proceed to Checkout
             </button>
           </div>
