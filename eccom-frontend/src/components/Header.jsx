@@ -6,7 +6,7 @@ import { useStore } from "../context/StoreProvider";
 export default function Header({ darkMode, setDarkMode }) {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
-  const { totalCartItems, setIsCartOpen } = useStore();
+  const { totalCartItems, setIsCartOpen,setCart } = useStore();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -21,6 +21,7 @@ export default function Header({ darkMode, setDarkMode }) {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
+    setCart([]);
     setUser(null);
     navigate("/");
   };

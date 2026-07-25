@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.razorpay.RazorpayException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     
@@ -27,5 +29,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(OutOfStockException.class)
     public ResponseEntity<String> handleOutOfStockException(OutOfStockException ex){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(RazorpayException.class)
+    public ResponseEntity<String> handleRazorpayException(RazorpayException ex){
+        System.err.print("Razorpay API error "+ ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Payment GateWay Error:" + ex.getMessage());
     }
 }

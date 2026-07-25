@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../context/StoreProvider";
 import { X, Trash2, Minus, Plus } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function CartDrawer() {
   const {
@@ -14,6 +15,10 @@ export default function CartDrawer() {
   const navigate = useNavigate();
 
   const handleProceedToCheckout = () => {
+    if(!JSON.parse(localStorage.getItem("user"))){
+      toast.error("Login to continue")
+      return;
+    }
     setIsCartOpen(false);
     navigate("/checkout");
   };

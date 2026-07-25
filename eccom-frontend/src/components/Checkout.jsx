@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { useStore } from "../context/StoreProvider";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { loadRazorpayScript } from "../utils/razorpay";
+import { createRazorpayOrderApi, verifyOrderApi } from "../http";
 
 export default function Checkout() {
-  const { cart, cartTotal } = useStore();
+  const { cart, cartTotal, setCart } = useStore();
   const navigate = useNavigate();
 
   const [shippingAddress, setShippingAddress] = useState({
@@ -12,6 +15,7 @@ export default function Checkout() {
     city: "",
     state: "",
     zipCode: "",
+    contact: ""
   });
 
   const handleInputChange = (e) => {
@@ -22,9 +26,72 @@ export default function Checkout() {
   const handleProceedToPay = async (e) => {
     e.preventDefault();
     
+    const isScriptLoaded = await loadRazorpayScript();
+    
+    if(!isScriptLoaded){
+      toast.error("Razorpay SDK failed to load. Please check your internet connection");
+      return;
+    }
 
-    console.log("Cart Data:", cart);
-    console.log("Address Collected:", shippingAddress);
+    try {
+      const orderData = await createRazorpayOrderApi(cartTotal);
+
+      const options = {
+        key: "rzp_test_THQ4jX7qDUBHtf",
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "DJcorner",
+        description: "Order Payment",
+        order_id: orderData.id,
+        handler: async function (response) {
+          console.log("Payment success Response ", response);
+
+          const orderItems = cart.map((item) => ({
+            productId: item.product.id,
+            quantity: item.quantity,
+          }));
+
+
+          const verificationPayload = {
+            razorpayPaymentId: response.razorpay_payment_id,
+            razorpayOrderId: response.razorpay_order_id,
+            razorpaySignature: response.razorpay_signature,
+            orderRequest: {
+              email: JSON.parse(localStorage.getItem("user"))?.email,
+              shippingAddress: `${shippingAddress.street}, ${shippingAddress.city}, ${shippingAddress.state}, ${shippingAddress.zipCode}`,
+              items: orderItems,
+            },
+          };
+
+          try {
+            const verifyResponse = await verifyOrderApi(verificationPayload);
+            
+            if (verifyResponse.status === 200) {
+              toast.success("Order placed successfully!");
+              setCart([]); 
+              navigate("/order-success"); 
+            }
+          } catch (err) {
+            console.error("Verification failed:", err);
+            toast.error(err.message || "Payment verified, but order creation failed.");
+          }
+        },
+        prefill: {
+          name: shippingAddress.fullName,
+          email: JSON.parse(localStorage.getItem("user"))?.email || "", 
+          contact: shippingAddress.contact
+        },
+        theme: {
+          color: "#000000",
+        },
+      };
+
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.open();
+    } catch (error) {
+      console.error("Checkout Error :", error);
+      toast.error(error.message || "Something went wrong during checkout");
+    }
   };
 
 
@@ -47,7 +114,6 @@ export default function Checkout() {
       <h1 className="mb-8 text-3xl font-black text-black dark:text-white">Checkout</h1>
       
       <div className="grid gap-8 lg:grid-cols-3">
-
         <div className="lg:col-span-2">
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
             <h2 className="mb-6 text-xl font-bold text-black dark:text-white">Shipping Address</h2>
@@ -114,6 +180,18 @@ export default function Checkout() {
                 />
               </div>
 
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Phone Number</label>
+                <input 
+                  type="text" 
+                  name="contact" 
+                  required
+                  value={shippingAddress.contact}
+                  onChange={handleInputChange}
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-black dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:focus:border-white"
+                />
+              </div>
+
               <button 
                 type="submit"
                 className="mt-6 w-full rounded-2xl bg-black py-4 text-sm font-bold text-white transition active:scale-95 hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-gray-100"
@@ -123,7 +201,6 @@ export default function Checkout() {
             </form>
           </div>
         </div>
-
 
         <div>
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">

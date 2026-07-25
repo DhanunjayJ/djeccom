@@ -28,3 +28,21 @@ export async function getAllProductsApi(){
         throw new Error(error.response?.data?.message || 'Failed to fetch products');
     }
 }
+
+export async function createRazorpayOrderApi(amount){
+    try {
+        const response = await axios.post(`${BASE_URL}/payment/create-order`,{amount : amount});
+        return response.data;
+    } catch(error){
+        throw new Error(error.response?.data || 'Failed to create Razorpay order');
+    }
+}
+
+export async function verifyOrderApi(payload){
+    try {
+    const res = await axios.post(`${BASE_URL}/payment/verify`,payload);
+    return res;
+    } catch (error){
+        throw new Error(error.response?.data || "Payment Verified by order creating failed");
+    }
+}

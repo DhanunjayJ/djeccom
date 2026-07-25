@@ -39,7 +39,7 @@ public class OrderService {
         
         order.setUser(user);
         order.setShippingAddress(request.shippingAddress());
-        order.setStatus(OrderStatus.PENDING);
+        order.setStatus(OrderStatus.PAID);
 
         BigDecimal calculatedTotal = BigDecimal.ZERO;
         List<OrderItem> orderItems = new ArrayList<>();
@@ -51,8 +51,8 @@ public class OrderService {
                 throw new RuntimeException("Not enough stock for product: "+ product.getName());
             }
 
-            // product.setStockQuantity(product.getStockQuantity() - itemRequest.quantity());
-            // productRepository.save(product);
+            product.setStockQuantity(product.getStockQuantity() - itemRequest.quantity());
+            productRepository.save(product);
 
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);
