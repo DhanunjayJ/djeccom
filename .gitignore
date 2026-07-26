@@ -1,0 +1,5 @@
+# IDE / Editor configuration
+.vscode/
+
+# GitHub modernization assets
+.github/modernize/java-upgrade/
