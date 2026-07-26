@@ -32,6 +32,12 @@ export default function OrderSuccess() {
         >
           Continue Shopping
         </button>
+        <button 
+          onClick={() => navigate("/orders")}
+          className="rounded-2xl bg-black px-8 py-4 text-sm font-bold text-white transition active:scale-95 hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-gray-100"
+        >
+          Checkout your Orders
+        </button>
       </div>
     </div>
   );

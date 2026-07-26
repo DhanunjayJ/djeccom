@@ -1,12 +1,14 @@
-import { useState, useEffect } from "react";
-import { ShoppingCart, User, Search, LogOut, Sun, Moon } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { ShoppingCart, User, Search, LogOut, Sun, Moon, Package } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useStore } from "../context/StoreProvider";
 
 export default function Header({ darkMode, setDarkMode }) {
   const [user, setUser] = useState(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
-  const { totalCartItems, setIsCartOpen,setCart } = useStore();
+  const { totalCartItems, setIsCartOpen, setCart } = useStore();
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -19,10 +21,24 @@ export default function Header({ darkMode, setDarkMode }) {
     }
   }, []);
 
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownRef]);
+
   const handleLogout = () => {
     localStorage.removeItem("user");
     setCart([]);
     setUser(null);
+    setIsDropdownOpen(false); 
     navigate("/");
   };
 
@@ -61,20 +77,40 @@ export default function Header({ darkMode, setDarkMode }) {
             </button>
 
             {user ? (
-              <div className="flex items-center gap-1.5 md:gap-2">
-                <div className="flex items-center justify-center gap-1.5 rounded-full bg-gray-100 p-2 text-sm font-medium text-gray-800 md:px-4 md:py-2 dark:bg-zinc-800 dark:text-zinc-200">
+              <div className="relative flex items-center gap-1.5 md:gap-2" ref={dropdownRef}>
+                <button 
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="flex items-center justify-center gap-1.5 rounded-full bg-gray-100 p-2 text-sm font-medium text-gray-800 transition hover:bg-gray-200 md:px-4 md:py-2 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
+                >
                   <User className="h-4 w-4" />
                   <span className="hidden max-w-30 truncate md:block">
-                    Hi, {user.userName}
+                    Hi, {user.userName || user.name || "User"}
                   </span>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  className="rounded-full p-2 text-gray-500 transition hover:bg-gray-100 hover:text-black dark:text-gray-400 dark:hover:bg-zinc-800 dark:hover:text-white"
-                  title="Log Out"
-                >
-                  <LogOut className="h-4 w-4" />
                 </button>
+
+                {/* Dropdown Menu */}
+                {isDropdownOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-48 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-800">
+                    <div className="flex flex-col py-1">
+                      <Link
+                        to="/orders"
+                        onClick={() => setIsDropdownOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 transition hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-zinc-700/50"
+                      >
+                        <Package className="h-4 w-4" />
+                        My Orders
+                      </Link>
+                      <div className="mx-4 my-1 border-t border-gray-100 dark:border-zinc-700"></div>
+                      <button
+                        onClick={handleLogout}
+                        className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-red-600 transition hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <Link
@@ -87,8 +123,9 @@ export default function Header({ darkMode, setDarkMode }) {
             )}
 
             <button 
-            onClick={() => setIsCartOpen(true)}
-            className="relative hidden items-center gap-1.5 rounded-full bg-black px-4 py-2 text-sm font-medium text-white shadow-sm transition active:scale-95 hover:bg-zinc-900 md:flex dark:bg-white dark:text-black dark:hover:bg-zinc-100">
+              onClick={() => setIsCartOpen(true)}
+              className="relative hidden items-center gap-1.5 rounded-full bg-black px-4 py-2 text-sm font-medium text-white shadow-sm transition active:scale-95 hover:bg-zinc-900 md:flex dark:bg-white dark:text-black dark:hover:bg-zinc-100"
+            >
               <ShoppingCart className="h-4 w-4" />
               <span>Cart</span>
               <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full border border-white bg-black text-[10px] font-bold text-white dark:border-zinc-900 dark:bg-white dark:text-black">
@@ -100,8 +137,9 @@ export default function Header({ darkMode, setDarkMode }) {
       </header>
 
       <button 
-      onClick={() => setIsCartOpen(true)}
-      className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-black text-white shadow-xl transition active:scale-95 md:hidden dark:bg-white dark:text-black">
+        onClick={() => setIsCartOpen(true)}
+        className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-black text-white shadow-xl transition active:scale-95 md:hidden dark:bg-white dark:text-black"
+      >
         <ShoppingCart className="h-6 w-6" />
         <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full border-2 border-white bg-black text-[10px] font-bold text-white dark:border-zinc-900 dark:bg-white dark:text-black">
           {totalCartItems}

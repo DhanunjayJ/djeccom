@@ -46,3 +46,12 @@ export async function verifyOrderApi(payload){
         throw new Error(error.response?.data || "Payment Verified by order creating failed");
     }
 }
+
+export async function getOrderHistoryApi(email){
+    try {
+        const response = await  axios.get(`${BASE_URL}/orders/history`,{params : {email:email}});
+        return response.data;
+    }catch (error){
+        throw new Error(error.response?.data || "Failed to fetch order history");
+    }
+}

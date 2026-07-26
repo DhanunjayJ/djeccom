@@ -71,4 +71,11 @@ public class OrderService {
 
         return orderRepository.save(order);
     }
+
+    public List<Order> getUserOrders(String email){
+        User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new UserException("User not found with email :" + email));
+        
+        return orderRepository.findByUserIdOrderByIdDesc(user.getId());
+    }
 }

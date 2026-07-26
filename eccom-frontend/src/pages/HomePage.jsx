@@ -1,6 +1,7 @@
 import { useOutletContext } from "react-router-dom";
-import CategoryCarousel from "./CategoryCarousel";
+
 import { useStore } from "../context/StoreProvider";
+import CategoryCarousel from "../components/CategoryCarousel";
 
 export default function HomePage() {
  const { products } = useStore();

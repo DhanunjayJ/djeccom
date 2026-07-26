@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react"; // Import arrows
+import { ChevronLeft, ChevronRight } from "lucide-react"; 
 import { Link } from "react-router-dom";
 
 
