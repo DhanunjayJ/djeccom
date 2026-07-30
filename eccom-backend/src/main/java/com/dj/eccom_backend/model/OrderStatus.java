@@ -1,8 +1,18 @@
 package com.dj.eccom_backend.model;
 
 public enum OrderStatus {
-   PROCESSING,
+   PENDING_PAYMENT,
+   PAYMENT_FAILED,
    PAID,
+   CONFIRMED,
+   PACKED,
    SHIPPED,
-   DELIVERED
+   IN_TRANSIT,
+   DELIVERY_FAILED,
+   DELIVERED,
+   CANCELLED,
+   RETURN_REQUESTED,
+   RETURN_REJECTED,
+   RETURNED,
+   REFUNDED
 }

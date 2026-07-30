@@ -8,4 +8,5 @@ import com.dj.eccom_backend.model.Order;
 
 public interface OrderRepository extends JpaRepository<Order,Long> {
     List<Order> findByUserIdOrderByIdDesc(Long userId);
+    List<Order> findAllByOrderByIdDesc();
 }

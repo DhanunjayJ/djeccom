@@ -7,6 +7,9 @@ import ProductPage from "./pages/ProductPage"
 import Checkout from "./components/Checkout"
 import OrderSuccess from "./pages/OrderSucess"
 import OrderHistory from "./pages/OrderHistory"
+import AdminConsole from "./pages/AdminConsole"
+import StaffOrders from "./pages/StaffOrders"
+import RequireRole from "./components/RequireRole"
 
 function App() {
   return (
@@ -20,6 +23,22 @@ function App() {
       <Route path="checkout" element={<Checkout />} />
       <Route path="/order-success" element={<OrderSuccess />} />
       <Route path="/orders" element={<OrderHistory />} />
+      <Route
+        path="/admin"
+        element={
+          <RequireRole roles={["ADMIN"]}>
+            <AdminConsole />
+          </RequireRole>
+        }
+      />
+      <Route
+        path="/staff/orders"
+        element={
+          <RequireRole roles={["ADMIN", "SUPPORT", "FULFILLMENT"]}>
+            <StaffOrders />
+          </RequireRole>
+        }
+      />
       </Route>
     </Routes>
     </BrowserRouter>

@@ -1,5 +1,27 @@
-# IDE / Editor configuration
-.vscode/
+# Environment files at any depth
+**/.env
+**/.env.*
 
-# GitHub modernization assets
-.github/modernize/java-upgrade/
+# Keep safe environment templates
+!**/.env.example
+!**/.env.*.example
+
+# Local hidden directories at any depth
+**/.*/
+
+# Keep project-owned build, CI, and hosting configuration
+!**/.mvn/
+!**/.mvn/**
+!**/.github/
+!**/.github/**
+!**/.openai/
+!**/.openai/**
+
+# Generated output and dependencies
+**/node_modules/
+**/dist/
+**/target/
+
+# OS metadata
+**/.DS_Store
+**/Thumbs.db

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { loginApi } from "../http";
+import { storeUser } from "../auth";
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -17,7 +18,7 @@ export default function LoginPage() {
       const data = await loginApi(loginData);
       
       toast.success("Welcome back! Logged in successfully.");
-      localStorage.setItem("user", JSON.stringify(data));
+      storeUser(data);
 
       setTimeout(() => {
         navigate("/");

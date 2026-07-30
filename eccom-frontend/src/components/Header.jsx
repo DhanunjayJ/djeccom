@@ -1,24 +1,20 @@
 import { useState, useEffect, useRef } from "react";
-import { ShoppingCart, User, Search, LogOut, Sun, Moon, Package } from "lucide-react";
+import { ShoppingCart, User, Search, LogOut, Sun, Moon, Package, Settings, Truck } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { useStore } from "../context/StoreProvider";
+import { useStore } from "../context/StoreContext";
+import { clearUser, getStoredUser } from "../auth";
 
 export default function Header({ darkMode, setDarkMode }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(getStoredUser);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
   const { totalCartItems, setIsCartOpen, setCart } = useStore();
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error("Failed to parse user data from localStorage");
-      }
-    }
+    const handleExpiredAuth = () => setUser(null);
+    window.addEventListener("auth:expired", handleExpiredAuth);
+    return () => window.removeEventListener("auth:expired", handleExpiredAuth);
   }, []);
 
 
@@ -35,7 +31,7 @@ export default function Header({ darkMode, setDarkMode }) {
   }, [dropdownRef]);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    clearUser();
     setCart([]);
     setUser(null);
     setIsDropdownOpen(false); 
@@ -100,6 +96,26 @@ export default function Header({ darkMode, setDarkMode }) {
                         <Package className="h-4 w-4" />
                         My Orders
                       </Link>
+                      {["ADMIN", "SUPPORT", "FULFILLMENT"].includes(user.role) && (
+                        <Link
+                          to="/staff/orders"
+                          onClick={() => setIsDropdownOpen(false)}
+                          className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 transition hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-zinc-700/50"
+                        >
+                          <Truck className="h-4 w-4" />
+                          Order Operations
+                        </Link>
+                      )}
+                      {user.role === "ADMIN" && (
+                        <Link
+                          to="/admin"
+                          onClick={() => setIsDropdownOpen(false)}
+                          className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 transition hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-zinc-700/50"
+                        >
+                          <Settings className="h-4 w-4" />
+                          Admin Console
+                        </Link>
+                      )}
                       <div className="mx-4 my-1 border-t border-gray-100 dark:border-zinc-700"></div>
                       <button
                         onClick={handleLogout}

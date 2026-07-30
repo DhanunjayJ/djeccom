@@ -42,7 +42,7 @@ public class Order {
     private BigDecimal totalAmount;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus status = OrderStatus.PROCESSING;
+    private OrderStatus status = OrderStatus.PENDING_PAYMENT;
 
     private String ShippingAddress;
 
