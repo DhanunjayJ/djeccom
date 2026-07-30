@@ -1,10 +1,10 @@
 package com.dj.eccom_backend.model;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
-import jakarta.persistence.CascadeType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -14,7 +14,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -22,35 +21,40 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "order_status_history")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Order {
-    
+public class OrderStatusHistory {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems;
-
-    private BigDecimal totalAmount;
+    @JoinColumn(name = "order_id", nullable = false)
+    @JsonIgnore
+    private Order order;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus status = OrderStatus.PENDING_PAYMENT;
+    @Column(nullable = false)
+    private OrderStatus fromStatus;
 
-    private String ShippingAddress;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private OrderStatus toStatus;
 
-    private LocalDateTime orderDate;
+    @Column(nullable = false)
+    private String changedBy;
+
+    @Column(columnDefinition = "TEXT")
+    private String note;
+
+    @Column(nullable = false)
+    private LocalDateTime changedAt;
 
     @PrePersist
-    protected void onCreate(){
-        orderDate = LocalDateTime.now();
+    void onCreate() {
+        changedAt = LocalDateTime.now();
     }
-
 }

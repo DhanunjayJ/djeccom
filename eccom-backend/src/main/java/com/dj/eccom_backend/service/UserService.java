@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.dj.eccom_backend.exception.UserException;
 import com.dj.eccom_backend.model.User;
+import com.dj.eccom_backend.model.UserRole;
 import com.dj.eccom_backend.model.dto.UserLogin;
 import com.dj.eccom_backend.model.dto.UserResponse;
 import com.dj.eccom_backend.model.dto.UserSignUp;
@@ -32,6 +33,7 @@ public class UserService {
         newUser.setEmail(normalizedEmail);
         newUser.setPassword(passwordEncoder.encode(user.password()));
         newUser.setUserName(user.userName().trim());
+        newUser.setRole(UserRole.CUSTOMER);
 
         User savedUser = userRepo.save(newUser);
         return authenticatedResponse(savedUser);
@@ -53,6 +55,7 @@ public class UserService {
                 user.getId(),
                 user.getUserName(),
                 user.getEmail(),
+                user.getRole(),
                 jwtService.createAccessToken(user),
                 "Bearer",
                 jwtService.getExpirationSeconds());

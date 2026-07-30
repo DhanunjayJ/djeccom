@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.dj.eccom_backend.model.User;
+import com.dj.eccom_backend.model.UserRole;
 import com.dj.eccom_backend.model.dto.UserResponse;
 import com.dj.eccom_backend.model.dto.UserSignUp;
 import com.dj.eccom_backend.repository.UserRepository;
@@ -61,6 +62,8 @@ class UserServiceTests {
         assertNotEquals("plain-password", savedUser.getPassword());
         assertTrue(passwordEncoder.matches("plain-password", savedUser.getPassword()));
         assertEquals("test@example.com", savedUser.getEmail());
+        assertEquals(UserRole.CUSTOMER, savedUser.getRole());
+        assertEquals(UserRole.CUSTOMER, response.role());
         assertEquals("signed-token", response.accessToken());
         assertEquals("Bearer", response.tokenType());
         assertEquals(3600L, response.expiresIn());

@@ -5,7 +5,7 @@ import CategoryCarousel from "../components/CategoryCarousel";
 export default function HomePage() {
  const { products } = useStore();
 
-  const groupedProducts = products?.reduce((acc, product) => {
+  const groupedProducts = (Array.isArray(products) ? products : []).reduce((acc, product) => {
     if (!acc[product.category]) {
       acc[product.category] = [];
     }
@@ -35,7 +35,7 @@ export default function HomePage() {
       </div>
 
      
-      {products ? (
+      {Array.isArray(products) ? (
         <div className="space-y-16">
           {Object.entries(groupedProducts).map(([category, items]) => (
             <CategoryCarousel
