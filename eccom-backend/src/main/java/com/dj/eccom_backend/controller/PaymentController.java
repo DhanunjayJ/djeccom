@@ -6,6 +6,8 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,7 +56,9 @@ public class PaymentController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<?> verifyAndCreateOrder(@RequestBody PaymentVerificationRequest request) throws RazorpayException {
+    public ResponseEntity<?> verifyAndCreateOrder(
+            @RequestBody PaymentVerificationRequest request,
+            @AuthenticationPrincipal Jwt jwt) throws RazorpayException {
         
         JSONObject options = new JSONObject();
         options.put("razorpay_order_id", request.razorpayOrderId());
@@ -67,7 +71,8 @@ public class PaymentController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment veification failed");
         }
 
-       com.dj.eccom_backend.model.Order order = orderService.createOrder(request.orderRequest());
+       com.dj.eccom_backend.model.Order order =
+                orderService.createOrder(request.orderRequest(), jwt.getSubject());
 
         return ResponseEntity.ok("Order placed sucessfully! ID : " + order.getId());
     }

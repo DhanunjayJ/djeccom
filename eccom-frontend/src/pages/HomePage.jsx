@@ -1,6 +1,5 @@
-import { useOutletContext } from "react-router-dom";
 
-import { useStore } from "../context/StoreProvider";
+import { useStore } from "../context/StoreContext";
 import CategoryCarousel from "../components/CategoryCarousel";
 
 export default function HomePage() {

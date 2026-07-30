@@ -1,8 +1,7 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { getAllProductsApi } from "../http";
 import toast from "react-hot-toast";
-
-const StoreContext = createContext();
+import { StoreContext } from "./StoreContext";
 
 export function StoreProvider({ children }) {
   const [products, setProducts] = useState(null);
@@ -95,5 +94,3 @@ export function StoreProvider({ children }) {
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 }
-
-export const useStore = () => useContext(StoreContext);

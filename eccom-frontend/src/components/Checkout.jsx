@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useStore } from "../context/StoreProvider";
+import { useStore } from "../context/StoreContext";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { loadRazorpayScript } from "../utils/razorpay";
 import { createRazorpayOrderApi, verifyOrderApi } from "../http";
+import { getStoredUser } from "../auth";
 
 export default function Checkout() {
   const { cart, cartTotal, setCart } = useStore();
@@ -57,7 +58,6 @@ export default function Checkout() {
             razorpayOrderId: response.razorpay_order_id,
             razorpaySignature: response.razorpay_signature,
             orderRequest: {
-              email: JSON.parse(localStorage.getItem("user"))?.email,
               shippingAddress: `${shippingAddress.street}, ${shippingAddress.city}, ${shippingAddress.state}, ${shippingAddress.zipCode}`,
               items: orderItems,
             },
@@ -78,7 +78,7 @@ export default function Checkout() {
         },
         prefill: {
           name: shippingAddress.fullName,
-          email: JSON.parse(localStorage.getItem("user"))?.email || "", 
+          email: getStoredUser()?.email || "",
           contact: shippingAddress.contact
         },
         theme: {

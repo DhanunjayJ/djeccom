@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { signUpApi } from "../http"; 
+import { storeUser } from "../auth";
 
 export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -15,12 +16,14 @@ export default function SignupPage() {
     const signUpData = Object.fromEntries(formData.entries());
 
     try {
-      await signUpApi(signUpData);
+      const data = await signUpApi(signUpData);
+      storeUser(data);
       
-      toast.success("Account created successfully! Redirecting to login...");
+      toast.success("Account created successfully!");
 
       setTimeout(() => {
-        navigate("/login");
+        navigate("/");
+        window.location.reload();
       }, 1500);
 
     } catch (error) {

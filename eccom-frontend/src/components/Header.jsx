@@ -1,24 +1,20 @@
 import { useState, useEffect, useRef } from "react";
 import { ShoppingCart, User, Search, LogOut, Sun, Moon, Package } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { useStore } from "../context/StoreProvider";
+import { useStore } from "../context/StoreContext";
+import { clearUser, getStoredUser } from "../auth";
 
 export default function Header({ darkMode, setDarkMode }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(getStoredUser);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
   const { totalCartItems, setIsCartOpen, setCart } = useStore();
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error("Failed to parse user data from localStorage");
-      }
-    }
+    const handleExpiredAuth = () => setUser(null);
+    window.addEventListener("auth:expired", handleExpiredAuth);
+    return () => window.removeEventListener("auth:expired", handleExpiredAuth);
   }, []);
 
 
@@ -35,7 +31,7 @@ export default function Header({ darkMode, setDarkMode }) {
   }, [dropdownRef]);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    clearUser();
     setCart([]);
     setUser(null);
     setIsDropdownOpen(false); 

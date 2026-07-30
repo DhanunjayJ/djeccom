@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { getOrderHistoryApi } from "../http";
+import { getStoredUser } from "../auth";
 
 export default function OrderHistory() {
   const [orders, setOrders] = useState([]);
@@ -10,16 +11,16 @@ export default function OrderHistory() {
 
   useEffect(() => {
     const fetchOrders = async () => {
-      const user = JSON.parse(localStorage.getItem("user"));
+      const user = getStoredUser();
       
-      if (!user || !user.email) {
+      if (!user?.accessToken) {
         toast.error("Please log in to view your orders.");
         navigate("/login");
         return;
       }
 
       try {
-        const data = await getOrderHistoryApi(user.email);
+        const data = await getOrderHistoryApi();
         const sortedOrders = data.sort((a, b) => b.id - a.id);
         setOrders(sortedOrders);
       } catch (error) {

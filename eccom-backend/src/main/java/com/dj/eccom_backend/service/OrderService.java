@@ -30,10 +30,10 @@ public class OrderService {
     private final ProductRepository productRepository;
 
     @Transactional
-    public Order createOrder(OrderRequest request){
+    public Order createOrder(OrderRequest request, String authenticatedEmail){
 
-        User user = userRepository.findByEmail(request.email())
-                    .orElseThrow(() -> new UserException("User not found with email :" + request.email()));
+        User user = userRepository.findByEmail(authenticatedEmail)
+                    .orElseThrow(() -> new UserException("User not found with email :" + authenticatedEmail));
 
         Order order = new Order();
         

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useLocation, Link, Navigate } from "react-router-dom";
 import { ArrowLeft, ShoppingCart, ShieldCheck, Truck } from "lucide-react";
-import { useStore } from "../context/StoreProvider";
+import { useStore } from "../context/StoreContext";
 
 export default function ProductPage() {
   const location = useLocation();
